@@ -6,6 +6,8 @@ var routes = require('routes')
 , Route = routes.Route
 , router = new Router()
 , config = require('./config.js')
+, fetchTotalDownloads = require('./routes/visualizations.js').fetchTotalDownloads
+, fetchPackageDownloads = require('./routes/visualizations.js').fetchPackageDownloads
 
 
 module.exports = router
@@ -26,6 +28,12 @@ router.addRoute('/doc/?', function (req, res) {
   static(req, res)
 })
 router.addRoute('/doc/*', static)
+
+router.addRoute('/vis/index', fetchTotalDownloads);
+router.addRoute('/vis/package/:name', function(req, res) {
+  var n = req.params && req.params.name || '';
+  fetchPackageDownloads(n, req, res);
+});
 
 router.addRoute('/stylus/*?', require('./routes/stylus.js'))
 // legacy
@@ -86,7 +94,7 @@ router.addRoute('/keyword/:kw', function (q, s) {
 
 router.addRoute('/browse/*?', require('./routes/browse.js'))
 
-var ra = require('./routes/recentauthors.js') 
+var ra = require('./routes/recentauthors.js')
 router.addRoute('/recent-authors', ra)
 router.addRoute('/recent-authors/*?', ra)
 

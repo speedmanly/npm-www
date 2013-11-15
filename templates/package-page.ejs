@@ -19,6 +19,8 @@
       month: dlMonth
     }) %>
 
+    <div id="download-chart"></div>
+
     <table class="metadata">
       <% if (package.maintainers) { %>
       <tr>
@@ -204,5 +206,21 @@
       <% } %>
     </div>
   </div>
+
+<script src="/static/download-vis.js"></script>
+<script type="text/javascript">
+var from = new Date(Date.now() - (1000 * 60 * 60 * 24 * 31)),
+    to = new Date(new Date().getTime() - (1000 * 60 * 60 * 24 * 1.5));
+
+downloadChart({
+  url: packageDownloadsUrl('<%= package.name %>', from, to),
+  margin: { top: 15, right: 40, bottom: 30, left: 65 },
+  width: 500,
+  height: 250,
+  el: '#download-chart',
+  hasYAxis: true,
+  dateKeyIndex: 1
+});
+</script>
 
 <%- include('footer.ejs', locals) %>
