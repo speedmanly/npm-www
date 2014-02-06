@@ -7,6 +7,7 @@ var replicate = require('replicate')
 , Replicator = replicate.Replicator
 , request = require('request')
 , initCouchDocs = require('./initCouchDocs')
+, sampleUsers = require('./sample_users.json')
 
 var crypto = require('crypto')
 function hash (id) {
@@ -54,18 +55,37 @@ function replicatePackages () {
 
 var morePackagesTimer
 function replicateUsers () {
-  if (didUsers) return
-  didUsers = true
-  console.error('replicate users')
-  new Replicator({
-    from: 'https://skimdb.npmjs.com/public_users',
-    to: 'http://admin:admin@localhost:15984/public_users',
-    filter: filterUser
-  }).push(function () {
+  
+  var cb = function () {
     if (didMorePackages) return
     clearTimeout(morePackagesTimer)
     morePackagesTimer = setTimeout(morePackages, 1000)
+  }
+
+  if (didUsers) return
+  didUsers = true
+  console.error('replicate users')
+  var to = 'http://admin:admin@localhost:15984/_users'
+  request.post({
+    json: true
+  , uri: to + '/_bulk_docs'
+  , body: sampleUsers
+  }, function (e, resp, b) {
+      if (e) {
+        console.log({error:e, body:b}) 
+      } else if (resp.statusCode > 199 && resp.statusCode < 300) {
+        console.log({success:true, resp:resp, body:b})
+      } else {
+        console.log({error:"status code is not 201.", body:b})
+      }          
+
+      return function () {
+        if (didMorePackages) return
+        clearTimeout(morePackagesTimer)
+        morePackagesTimer = setTimeout(morePackages, 1000)
+      }
   })
+  
 }
 
 // now replicate more packages.  by this time, the site has
