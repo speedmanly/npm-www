@@ -88,9 +88,13 @@ router.addRoute('/keyword/:kw', function (q, s) {
 
 router.addRoute('/browse/*?', require('./routes/browse.js'))
 
-var ra = require('./routes/recentauthors.js') 
+var ra = require('./routes/recentauthors.js')
 router.addRoute('/recent-authors', ra)
 router.addRoute('/recent-authors/*?', ra)
+
+var healthchecks = require('./routes/healthchecks.js')
+router.addRoute('/ping', healthchecks.ping)
+router.addRoute('/status', healthchecks.status)
 
 // npmjs.org/npm -> npmjs.org/package/npm
 // if nothing else matches.
