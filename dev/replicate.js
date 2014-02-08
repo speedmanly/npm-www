@@ -39,7 +39,7 @@ function replicateDdocs () {
 // replicate packages, then when we don't see any
 // updates for a full second, do the users.
 var userTimer
-, didUsers = fs.existsSync('./user_upload_complete.dat')
+, didUsers = fs.existsSync(__dirname + '/user_upload_complete.dat')
 , didMorePackages = false
 
 function replicatePackages () {
@@ -63,7 +63,7 @@ function replicateUsers () {
     morePackagesTimer = setTimeout(morePackages, 1000)
   }
 
-  if (didUsers) return
+  if (didUsers) return cb()
   didUsers = true
   console.error('replicate users')
   var to = 'http://admin:admin@localhost:15984/_users'
@@ -73,19 +73,15 @@ function replicateUsers () {
   , body: sampleUsers
   }, function (e, resp, b) {
       if (e) {
-        console.log({error:e, body:b}) 
+        console.log({error:e, body:b})
       } else if (resp.statusCode > 199 && resp.statusCode < 300) {
         console.log({success:true, resp:resp, body:b})
-        fs.writeFileSync('dev/user_upload_complete.dat', '');
+        fs.writeFileSync(__dirname + '/user_upload_complete.dat', '');
       } else {
         console.log({error:"status code is not 201.", body:b})
       }          
 
-      return function () {
-        if (didMorePackages) return
-        clearTimeout(morePackagesTimer)
-        morePackagesTimer = setTimeout(morePackages, 1000)
-      }
+      return cb()
   })
   
 }
