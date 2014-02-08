@@ -7,6 +7,7 @@ var replicate = require('replicate')
 , Replicator = replicate.Replicator
 , request = require('request')
 , initCouchDocs = require('./initCouchDocs')
+, fs = require('fs')
 , sampleUsers = require('./sample_users.json')
 
 var crypto = require('crypto')
@@ -38,7 +39,7 @@ function replicateDdocs () {
 // replicate packages, then when we don't see any
 // updates for a full second, do the users.
 var userTimer
-, didUsers = false
+, didUsers = fs.existsSync('./user_upload_complete.dat')
 , didMorePackages = false
 
 function replicatePackages () {
@@ -75,6 +76,7 @@ function replicateUsers () {
         console.log({error:e, body:b}) 
       } else if (resp.statusCode > 199 && resp.statusCode < 300) {
         console.log({success:true, resp:resp, body:b})
+        fs.writeFileSync('dev/user_upload_complete.dat', '');
       } else {
         console.log({error:"status code is not 201.", body:b})
       }          
