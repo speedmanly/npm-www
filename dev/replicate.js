@@ -9,6 +9,7 @@ var replicate = require('replicate')
 , initCouchDocs = require('./initCouchDocs')
 , fs = require('fs')
 , sampleUsers = require('./sample_users.json')
+, _auth = require('./_auth.json')
 
 var crypto = require('crypto')
 function hash (id) {
@@ -32,7 +33,30 @@ function filterUser (id, rev) {
 // first sync up the design docs, since this is the most important
 // thing for the dev server starting up properly.
 function replicateDdocs () {
-  initCouchDocs.replicateDdocs(replicatePackages);
+  request({
+    url: 'http://admin:admin@localhost:15984/_users/_design/_auth'    
+  , json: true
+  }, function (err, res, bod) {
+    _auth._rev = bod._rev
+  
+    request.put({
+      url: 'http://admin:admin@localhost:15984/_users/_design/_auth' 
+    , body: _auth
+    , json: true
+    }, function (e, resp, b) {
+      if (e) {
+        console.log({error:e, body:b})
+      } else if (resp.statusCode > 199 && resp.statusCode < 300) {
+        console.log({success:true})
+        // console.log({success:true, resp:resp, body:b})
+      } else {
+        console.log({error:"status code is not 201.", body:b})
+      }          
+
+      initCouchDocs.replicateDdocs(replicatePackages);
+    })
+  })
+
 }
 
 
