@@ -146,7 +146,8 @@ form {
           display: block;
           padding: 0 0 0 35px;
           line-height: 23px;
-          background: url('/static/icons-interior.png') no-repeat -156px 3px;
+          // background: url('/static/icons-interior.png') no-repeat -156px 3px;
+          background: url('/static/sprites.png') no-repeat -156px 3px;
         }
       }
       li:first-child { border-top: none; }
@@ -365,9 +366,14 @@ html body ul.search-results .package.search-result {
 
 .package, #package, #profile {
   width:490px;
-  > h1 {
-    font: 28px Georgia, serif;
+  header {
     border-bottom: solid 1px #000;
+    position: relative;
+
+    h1 {
+      font: 28px Georgia, serif;
+      margin: 0; 
+    }
   }
   .row {
     padding:0.75em 0;
@@ -432,6 +438,24 @@ html body ul.search-results .package.search-result {
       }
     }
   }
+
+  .star {
+    display: inline-block;
+    text-indent: -999999px;
+    background: url('/static/sprites.png') no-repeat;
+    background-position: -0px -215px;
+    width: 30px;
+    height: 28px;
+    position: absolute;
+    right: 0;
+    bottom: 3px;
+  }
+  // .star-unstarred {
+  // }
+  .star-starred {
+    background-position: -326px -215px;
+  }
+
   .user {
     padding: 1px;
 
