@@ -1,7 +1,10 @@
 <%- include('header.ejs', locals) %>
 
   <div id="package">
-    <h1><%= package.name %></h1>
+    <header>
+      <h1><%= package.name %></h1>
+      <a href="#" class="star" title="click here to star/unstar this package" data-name="<%= package.name %>"></a>
+    </header>
 
     <% if (package.deprecated) { %>
       <p class="deprecated"><%= package.deprecated %></p>
