@@ -10,6 +10,10 @@ function login (req, res) {
     case 'GET':
       return req.session.get('auth', function (er, data) {
         if (data && !data.error) return res.redirect("/profile")
+
+        // if ?done=/package/pkg - redirect to pkg after logging in
+        if (req.query.done) req.session.set('done', req.query.done)
+
         req.model.load("profile", req);
         req.model.end(function(er, m) {
           // error just means we're not logged in.
