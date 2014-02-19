@@ -15,25 +15,24 @@ function star (req, res) {
 
     req.couch.get(pm + '?revs=true', function (er, cr, data) {
       if (er) { // user probably isn't logged in
-        console.error('error! ', er)
+        // console.error('error! ', er)
         return res.error(500, er)
       }
 
       data.users = data.users || {}
 
       if (starIt) { // user did star it once and now wants to unstar
-        console.error('starring: ', data._id)
+        // console.error('starring: ', data._id)
         data.users[username] = true
       } else { // user hasn't starred it yet
-        console.error('unstarring: ', data._id)
+        // console.error('unstarring: ', data._id)
         delete data.users[username]
       }
 
-      console.error('all stars: ', data.users)
       req.couch.put(pm, data, function (er, cr, data) {
-        console.error('er: ', er)
+        // console.error('er: ', er)
         // console.error('cr: ', cr)
-        console.error('data: ', data)
+        // console.error('data: ', data)
         return res.send(200)
       })
 
