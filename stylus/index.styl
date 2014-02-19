@@ -146,8 +146,7 @@ form {
           display: block;
           padding: 0 0 0 35px;
           line-height: 23px;
-          // background: url('/static/icons-interior.png') no-repeat -156px 3px;
-          background: url('/static/sprites.png') no-repeat -156px 3px;
+          background: url('/static/icons-interior.png') no-repeat -156px 3px;
         }
       }
       li:first-child { border-top: none; }
@@ -441,19 +440,23 @@ html body ul.search-results .package.search-result {
 
   .star {
     display: inline-block;
-    text-indent: -999999px;
-    background: url('/static/sprites.png') no-repeat;
-    background-position: -0px -215px;
-    width: 30px;
-    height: 28px;
     position: absolute;
     right: 0;
     bottom: 3px;
+    font-size: 2em;
+    color: #000;
+    &:before {
+      content: '☆ '
+    }
+    &:hover {
+      text-decoration: none;
+    }
   }
-  // .star-unstarred {
-  // }
   .star-starred {
-    background-position: -326px -215px;
+    color: gold;  
+    &:before {
+      content: '★ '
+    }
   }
 
   .user {
