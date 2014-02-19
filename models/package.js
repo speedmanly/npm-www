@@ -54,7 +54,7 @@ function package (params, cb) {
 
   var uri = name
   if (version) uri += '/' + version
-  npm.registry.get(uri, 600, false, true, function (er, data) {
+  npm.registry.get(uri, 1, false, true, function (er, data) {
     if (er) return cb(er)
     data.starredBy = Object.keys(data.users || {}).sort()
     var len = data.starredBy.length

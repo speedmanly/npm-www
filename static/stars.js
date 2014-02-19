@@ -3,6 +3,7 @@
 */
 
 $(document).ready(function () {
+  // user clicks on the star
   $('.star').click(function () {
     var data = {}
     data.name = $(this).data('name')
