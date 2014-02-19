@@ -2,8 +2,8 @@ module.exports = package
 
 var LRU = require("lru-cache")
 , regData = new LRU({
-    max: 10000,
-    maxAge: 1000 * 60 * 10
+    max: 1000,
+    maxAge: 100
   })
 , marked = require("marked")
 , sanitizer = require('sanitizer')
@@ -48,9 +48,9 @@ function package (params, cb) {
     return cb(new Error('invalid package name'))
 
   var k = name + '/' + version
-  , data = regData.get(k)
+  //, data = regData.get(k)
 
-  if (data) return cb(null, data)
+  //if (data) return cb(null, data)
 
   var uri = name
   if (version) uri += '/' + version
