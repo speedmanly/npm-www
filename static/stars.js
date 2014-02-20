@@ -10,17 +10,16 @@ function addExpiration () {
 }
 
 function getPackages (name) {  
-  if (document.cookie.indexOf('packages') === -1) return name ? null : {}
+  var packages = document.cookie.split(";")
+                  .map(function(k) { 
+                    return k.trim().split("=") 
+                  })
+                  .reduce(function (set, kv) { 
+                    set[kv.shift()] = kv.join("="); 
+                    return set
+                  },{})
 
-  var cookies = document.cookie.split('; ')
-  for (var i = 0; i < cookies.length; ++i) {
-    if (cookies[i].indexOf('packages') > -1)
-      var packages = JSON.parse(cookies[i].split('=')[1])
-      if (name) return packages[name]
-      return packages
-  }
-
-  return name ? null : {}
+  return name ? packages[name] : packages
 }
 
 $(document).ready(function () {
@@ -28,6 +27,7 @@ $(document).ready(function () {
   var packageName = $('.star').data('name')
   
   var starType = getPackages(packageName)
+
   if (starType) {
     if (starType === 'star') {
       $('.star').addClass('star-starred')
@@ -56,17 +56,16 @@ $(document).ready(function () {
       if (data.isStarred) {
         // console.log('no more yellow :-(')
         $('.star').removeClass('star-starred')
-        packages[data.name] = 'nostar'
-        document.cookie =  'packages=' + JSON.stringify(packages) + addExpiration()
+        document.cookie = data.name + '=nostar' + addExpiration()
       } else {
         // console.log('make it into a star!!')
         $('.star').addClass('star-starred')
-        packages[data.name] = 'star'
-        document.cookie =  'packages=' + JSON.stringify(packages) + addExpiration()
+        document.cookie = data.name + '=star' + addExpiration()
       }
 
     })
     .error(function (resp) {
+      // we're probably not logged in
       // console.log('error: ', resp)
       window.location = '/login?done=/package/' + data.name
     })
