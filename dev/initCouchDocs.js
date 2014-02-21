@@ -4,7 +4,6 @@ var request = require('request')
 // thing for the dev server starting up properly.
 var ddocs =
   [ 'registry/_design/app',
-    'registry/_design/ghost',
     'registry/_design/scratch' ]
 
 function replicateDdocs (callback) {
