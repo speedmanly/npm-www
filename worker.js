@@ -45,7 +45,6 @@ else h = 'http://' + h
 
 var lonePort = 10000 + (cluster.worker.id % 100)
 var lh = h + ':' + lonePort
-if (config.port && config.port !== 443) h += ':' + config.port
 
 config.canonicalHost = h
 
