@@ -49,16 +49,10 @@ function indexPage (req, res) {
 
   req.model.load('root')
 
-  // Show download count for the last week and month.
-  // since the current day might not be done loading, back up an extra
-  // day as well.
-  // TODO: Detailed analytics, maybe with some nice client-side chart
-  var month = Date.now() - 1000 * 60 * 60 * 24 * 31
-  var week = Date.now() - 1000 * 60 * 60 * 24 * 8
-  var end = Date.now() - 1000 * 60 * 60 * 24
-  //req.model.loadAs('downloads', 'dlDay', end, end, name, false)
-  //req.model.loadAs('downloads', 'dlWeek', week, end, name, false)
-  //req.model.loadAs('downloads', 'dlMonth', month, end, name, false)
+  // Show download count for the last day, week, and month.
+  req.model.loadAs('downloads', 'dlDay', 'last-day')
+  req.model.loadAs('downloads', 'dlWeek', 'last-week')
+  req.model.loadAs('downloads', 'dlMonth', 'last-month')
 
   req.model.load('profile', req)
 
