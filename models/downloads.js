@@ -35,14 +35,29 @@ function load (k, cb) {
   var url = config.downloads.url + "point/" + period
   if (pkg) url += "/" + pkg
 
-  hh.get(url, parse(function(er, data, res) {
+  // we want download stats!
+  var req = hh.request(url,parse(function(er, data, res) {
     if (er) {
-      console.warn('Fetching download failed', res.headers, er)
+      // request failed entirely
+      console.warn('Fetching downloads failed', res.headers, er)
       cb(null,0)
     }
     else {
+      // update the cache when the request completes
+      // (even if we already timed out and returned to user)
+      console.warn('Fetching downloads completed')
       cb(null,data.downloads||0)
     }
   }))
+  // but don't wait more than a second for them
+  req.on('socket', function (socket) {
+    socket.setTimeout(1000);
+    socket.on('timeout', function() {
+      // we let the request complete, but we call back immediately
+      console.warn("Fetching downloads timed out")
+      cb(null,0)
+    })
+  })
+  req.end()
 
 }
