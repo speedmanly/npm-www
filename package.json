@@ -38,7 +38,8 @@
     "sanitizer": "^0.1.1",
     "st": "^0.3.0",
     "stylus": "git://github.com/LearnBoost/stylus.git",
-    "templar": "~0.2"
+    "templar": "~0.2",
+    "http-https": "~1.0.0"
   },
   "bundleDependencies": [
     "async-cache",

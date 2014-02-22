@@ -10,16 +10,11 @@ function packagePage (req, res) {
   req.model.load('package', req.params)
   req.model.load('browse', 'depended', req.params.name, 0, 1000)
 
-  // Show download count for the last week and month.
-  // since the current day might not be done loading, back up an extra
-  // day as well.
-  // TODO: Detailed analytics, maybe with some nice client-side chart
-  var month = Date.now() - 1000 * 60 * 60 * 24 * 31
-  var week = Date.now() - 1000 * 60 * 60 * 24 * 8
-  var end = Date.now() - 1000 * 60 * 60 * 24
-  req.model.loadAs('downloads', 'dlDay', end, end, name, false)
-  req.model.loadAs('downloads', 'dlWeek', week, end, name, false)
-  req.model.loadAs('downloads', 'dlMonth', month, end, name, false)
+  // Show download count for the last day, week, and month
+  // TODO: pretty graphs for logged-in users
+  req.model.loadAs('downloads', 'dlDay', 'last-day', name)
+  req.model.loadAs('downloads', 'dlWeek', 'last-week', name)
+  req.model.loadAs('downloads', 'dlMonth', 'last-month', name)
 
   req.model.end(function (er, m) {
     if (er && er.code === 'E404') return res.error(404, er)

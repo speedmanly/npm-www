@@ -1,17 +1,13 @@
-// stupid download counters
-// The download counts are like this:
-//
-// /download/_design/app/_view/pkg
-// --> {key:["pkgname", "YYYY-MM-DD"],value:123}
-// /download/_design/app/_view/day
-// --> {key:["YYYY-MM-DD", "pkgname"],value:123}
-//
-// These only change daily.
-
+// slightly less stupid download counts
+// The download API is in /npm/download-counts.
+// If the downloads API isn't running, you get nothing, and we display nothing.
 
 module.exports = downloads
 
 var AC = require('async-cache')
+var hh = require('http-https')
+var parse = require('parse-json-response')
+
 var cache = new AC({
   max: 1000,
   maxAge: 1000 * 60 * 60,
@@ -21,94 +17,32 @@ var cache = new AC({
 var config = require('../config.js')
 var qs = require('querystring')
 
-function day (s) {
-  if (!(s instanceof Date)) {
-    if (!Date.parse(s))
-      return null
-    s = new Date(s)
-  }
-  return s.toISOString().substr(0, 10)
-}
+function downloads (period, pkg, cb) {
 
-function downloads (start, end, pkg, detail, cb) {
-  if (typeof cb !== 'function')
-    cb = detail, detail = false
+  // pkg is optional
   if (typeof cb !== 'function')
     cb = pkg, pkg = null
-  if (typeof cb !== 'function')
-    cb = end, end = null
-  if (typeof cb !== 'function')
-    cb = start, start = null
 
-  return process.nextTick(function() {
-    cb(null, 0)
-  })
-  var k = JSON.stringify([start, end, pkg, detail])
+  var k = JSON.stringify([period, pkg])
   cache.get(k, cb)
 }
 
 function load (k, cb) {
   k = JSON.parse(k)
-  var start = k[0]
-  var end = k[1]
-  var pkg = k[2]
-  var detail = k[3]
+  var period = k[0]
+  var pkg = k[1]
 
-  var view, startkey, endkey, grouplevel
-  if (start) start = new Date(start).toISOString().split('T')[0]
-  if (pkg) {
-    view = 'pkg'
-    startkey = [pkg, day(start)]
-    endkey = [pkg, day(end) || {}]
-  } else {
-    view = 'day'
-    startkey = [day(start)]
-    endkey = [day(end) || {}, {}]
-  }
-  grouplevel = detail ? 2 : 1
-  var u = '/downloads/_design/app/_view/' + view
-  var q = qs.stringify({
-    startkey: JSON.stringify(startkey),
-    endkey: JSON.stringify(endkey),
-    group_level: grouplevel
-  })
+  var url = config.downloads.url + "point/" + period
+  if (pkg) url += "/" + pkg
 
-  config.adminCouch.get(u + '?' + q, function (er, cr, data) {
-    // downloads aren't really that important.
-    // just lie and pretend we didn't see anything.
-    if (er || !data) {
-      data = { rows: [] }
-      er = null
+  hh.get(url, parse(function(er, data, res) {
+    if (er) {
+      console.warn('Fetching download failed', res.headers, er)
+      cb(null,0)
     }
+    else {
+      cb(null,data.downloads||0)
+    }
+  }))
 
-    if (detail)
-      data = data.rows.reduce(function (set, row) {
-        var k = row.key
-        var h = k[0]
-        var t = k[1]
-        set[h] = set[h] || {}
-        set[h][t] = row.value
-        return set
-      }, {})
-    else if (pkg)
-      data = (data.rows || []).reduce(function (set, row) {
-        var h = row.key[0]
-        set[h] = row.value
-        return set
-      }, {})
-    else
-      data = (data.rows || []).map(function (r) {
-        return r.value
-      }).reduce(function (a, b) {
-        return a + b
-      }, 0)
-
-    if (pkg)
-      data = data[pkg]
-
-    if (data === undefined)
-      data = 0
-
-    return cb(er, data)
-  })
 }
