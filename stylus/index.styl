@@ -365,9 +365,14 @@ html body ul.search-results .package.search-result {
 
 .package, #package, #profile {
   width:490px;
-  > h1 {
-    font: 28px Georgia, serif;
+  header {
     border-bottom: solid 1px #000;
+    position: relative;
+
+    h1 {
+      font: 28px Georgia, serif;
+      margin: 0; 
+    }
   }
   .row {
     padding:0.75em 0;
@@ -432,6 +437,28 @@ html body ul.search-results .package.search-result {
       }
     }
   }
+
+  .star {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    bottom: 3px;
+    font-size: 2em;
+    color: #000;
+    &:before {
+      content: '☆ '
+    }
+    &:hover {
+      text-decoration: none;
+    }
+  }
+  .star-starred {
+    color: gold;  
+    &:before {
+      content: '★ '
+    }
+  }
+
   .user {
     padding: 1px;
 

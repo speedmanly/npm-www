@@ -42,6 +42,8 @@ router.addRoute('/login', require('./routes/login.js'))
 
 router.addRoute('/profile-edit', require('./routes/profile-edit.js'))
 
+router.addRoute('/star', require('./routes/star.js'))
+
 router.addRoute('/email-edit', require('./routes/email-edit.js'))
 router.addRoute('/email-edit/:action/:token', require('./routes/email-edit.js'))
 
