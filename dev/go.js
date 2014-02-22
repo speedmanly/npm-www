@@ -142,6 +142,10 @@ queue(function (cb) {
     pageSize: 20
   }
 
+  config.downloads = {
+    url: "http://localhost:8000/downloads/"
+  }
+
   config.debug = true
 
   // write to the dev admin config.
