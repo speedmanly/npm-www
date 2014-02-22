@@ -55,9 +55,21 @@ function loadFields (profile) {
     var show = val ? tpl.replace(/%s/g, val) : ''
     var urlTest = config.profileFields[f][2]
     show = show && sanitizer.sanitize(show, function (u) {
-      u = url.parse(u)
+      if (!u.scheme_) return
+
+      u = {
+        protocol: u.scheme_ + ':',
+        host: u.domain_ + (u.port_ ? ':' + u.port_ : ''),
+        pathname: u.path_,
+        query: u.query_,
+        hash: u.fragment_
+      }
+      u = url.parse(url.format(u))
       return (!u || !u.href || !urlTest || !urlTest(u)) ? '' : u.href
     }) || ''
+
+    show = show.replace(/<a( rel="me")?>(.*?)<\/a>/, '$2')
+
     return {
       name: f,
       value: val,
