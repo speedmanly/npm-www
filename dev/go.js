@@ -80,9 +80,11 @@ queue(function (cb) {
   exec('redis-server', ['dev/redis/redis.conf'], cb)
 
 }, function (cb) {
-  // give it a few seconds to download some interesting data.
+  // wait 10 seconds for couch to start and download some data
   // otherwise the site is pretty empty.
-  exec(process.execPath, [require.resolve('./replicate.js')], 5000, cb)
+  setTimeout(function() {
+    exec(process.execPath, [require.resolve('./replicate.js')], 5000, cb)
+  },10000)
 
 }, function (cb) {
   // by now, elastic search is probably up
