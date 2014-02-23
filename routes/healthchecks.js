@@ -9,6 +9,7 @@ exports.status = function status (req, res) {
     status:   'OK',
     pid:      process.pid,
     app:      process.title,
+    host:     process.env.SMF_ZONENAME,
     uptime:   process.uptime(),
     version:  package.version
   }, 200);
