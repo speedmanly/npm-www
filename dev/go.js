@@ -54,50 +54,71 @@ process.on('exit', function() {
   })
 })
 
-queue(function (cb) {
-  // first, make sure that we have the databases, or replicate will fail
-  touch('dev/couch/registry.couch', cb)
+var mode = 'all'
+var validModes = ['all','www-only','db-only']
+if (process.argv[2]) {
+  if (validModes.indexOf(process.argv[2]) > -1) mode = process.argv[2]
+  else {
+    console.log("Invalid run mode " + process.argv[2])
+    exit(1)
+  }
+}
 
-}, function (cb) {
-  touch('dev/couch/public_users.couch', cb)
+if (mode == 'all' || mode == 'db-only') {
+  queue(function (cb) {
+    // first, make sure that we have the databases, or replicate will fail
+    touch('dev/couch/registry.couch', cb)
 
-}, function (cb) {
-  touch('dev/couch/downloads.couch', cb)
+  }, function (cb) {
+    touch('dev/couch/public_users.couch', cb)
 
-}, function (cb) {
-  // start elasticsearch
-  exec('elasticsearch', [
-    '-Des.config=dev/elasticsearch/elasticsearch.yml'
-    , '-f'
-  ], 5000, cb)
+  }, function (cb) {
+    touch('dev/couch/downloads.couch', cb)
 
-}, function (cb) {
-  // spawn couchdb, and make sure it stays up for a little bit
-  exec('couchdb', ['-a', 'dev/couch/couch.ini'], cb)
+  }, function (cb) {
+    // start elasticsearch
+    exec('elasticsearch', [
+      '-Des.config=dev/elasticsearch/elasticsearch.yml'
+      , '-f'
+    ], 5000, cb)
 
-}, function (cb) {
-  // do the same for redis.
-  exec('redis-server', ['dev/redis/redis.conf'], cb)
+  }, function (cb) {
+    // spawn couchdb, and make sure it stays up for a little bit
+    exec('couchdb', ['-a', 'dev/couch/couch.ini'], cb)
 
-}, function (cb) {
-  // wait 10 seconds for couch to start and download some data
-  // otherwise the site is pretty empty.
-  setTimeout(function() {
-    exec(process.execPath, [require.resolve('./replicate.js')], 5000, cb)
-  },10000)
+  }, function (cb) {
+    // do the same for redis.
+    exec('redis-server', ['dev/redis/redis.conf'], cb)
 
-}, function (cb) {
-  // by now, elastic search is probably up
-  exec(process.execPath, [
-    './node_modules/npm2es/bin/npm2es.js'
-    , '--couch=http://localhost:15984/registry'
-    , '--es=http://127.0.0.1:9200/npm'
-  ], function (code) {
-    console.error('did npm2es', code)
-    cb(code)
+  }, function (cb) {
+    // wait 10 seconds for couch to start and download some data
+    // otherwise the site is pretty empty.
+    setTimeout(function() {
+      exec(process.execPath, [require.resolve('./replicate.js')], 5000, cb)
+    },10000)
+
+  }, function (cb) {
+    // by now, elastic search is probably up
+    exec(process.execPath, [
+      './node_modules/npm2es/bin/npm2es.js'
+      , '--couch=http://localhost:15984/registry'
+      , '--es=http://127.0.0.1:9200/npm'
+    ], function (code) {
+      console.error('did npm2es', code)
+      cb(code)
+    })
+
+  }, function(er) {
+    if(mode == 'all') {
+      launchWww(er)
+    }
   })
+} else {
+  launchWww()
+}
 
-}, function (er) {
+
+function launchWww (er) {
   if (er) throw er
 
   console.error('\n\n\nSTARTING DEV SITE NOW\n\n\n')
@@ -150,8 +171,8 @@ queue(function (cb) {
 
   // write to the dev admin config.
   fs.writeFileSync('config.dev.js',
-                   'module.exports = ' + JSON.stringify(config, null, 2),
-                   'utf8')
+    'module.exports = ' + JSON.stringify(config, null, 2),
+    'utf8')
 
   process.env.NODE_ENV = 'dev'
   process.env.CLUSTER_MASTER_REPL = 15337
@@ -159,4 +180,4 @@ queue(function (cb) {
   // now we've replicated everything, and set up the configs,
   // and it worked, so start up the master http server.
   require('../server.js')
-})
+}
