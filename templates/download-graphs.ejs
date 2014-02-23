@@ -1,14 +1,13 @@
 <% if(month && month.length > 1) { %>
 
 <div class="downloads-chart">
-  <div class="day"><%- month[month.length-1].downloads %> downloads yesterday</div>
   <div class="graph">
-    Downloads last month:
-    <canvas id="download-chart" width="300" height="100"></canvas>
+    <div id="download-chart"></canvas>
     <script>
       var monthData = <%- JSON.stringify(month) %>;
     </script>
   </div>
+  <div class="day"><%- month[month.length-1].downloads %> downloads yesterday</div>
 </div>
 
 <% } %>
