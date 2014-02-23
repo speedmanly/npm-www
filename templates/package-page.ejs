@@ -18,11 +18,15 @@
 
     <pre class="sh"><code>npm install <%= package.name %></code></pre>
 
-    <%- include('download-counts.ejs', {
-      day: dlDay,
-      week: dlWeek,
-      month: dlMonth
-    }) %>
+    <% if(dlDetail == 'point') { %>
+      <%- include('download-counts.ejs', {
+                  day: dlDay,
+                  week: dlWeek,
+                  month: dlMonth
+                  }) %>
+    <% } else { %>
+      <%- include('download-graphs.ejs', { month: dlMonth }) %>
+    <% } %>
 
     <table class="metadata">
       <% if (package.maintainers) { %>

@@ -17,13 +17,13 @@ var cache = new AC({
 var config = require('../config.js')
 var qs = require('querystring')
 
-function downloads (period, pkg, cb) {
+function downloads (period, detail, pkg, cb) {
 
   // pkg is optional
   if (typeof cb !== 'function')
     cb = pkg, pkg = null
 
-  var k = JSON.stringify([period, pkg])
+  var k = JSON.stringify([period, pkg, detail])
   cache.get(k, cb)
 }
 
@@ -31,8 +31,9 @@ function load (k, cb) {
   k = JSON.parse(k)
   var period = k[0]
   var pkg = k[1]
+  var detail = k[2]
 
-  var url = config.downloads.url + "point/" + period
+  var url = config.downloads.url + detail + "/" + period
   if (pkg) url += "/" + pkg
 
   // we want download stats!
@@ -45,7 +46,8 @@ function load (k, cb) {
     else {
       // update the cache when the request completes
       // (even if we already timed out and returned to user)
-      console.warn('Fetching downloads completed')
+      console.warn('Fetching downloads completed:')
+      console.warn(data.downloads)
       cb(null,data.downloads||0)
     }
   }))
