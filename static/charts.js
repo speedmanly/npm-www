@@ -1,82 +1,23 @@
-// d3 does not have native jsonp, so add it
-d3.jsonp = function (url, callback) {
-  function rand() {
-    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
-      c = '', i = -1;
-    while (++i < 15) c += chars.charAt(Math.floor(Math.random() * 52));
-    return c;
+$(window).on('load',function(e) {
+  if($('.downloads-chart').length > 0 ) {
+    downloadChart({
+      data: monthData.map(function(dayPair,index,monthData) {
+        dayPair.date = Date.parse(dayPair.day)
+        return dayPair
+      }),
+      margin: {top: 5, right: 40, bottom: 30, left: 20},
+      width: 440,
+      height: 100,
+      el: '#download-chart',
+      hasYAxis: false,
+      dateKeyIndex: 0
+    });
   }
-
-  function create(url) {
-    var e = url.match(/callback=d3.jsonp.(\w+)/),
-      c = e ? e[1] : rand();
-    d3.jsonp[c] = function(data) {
-      callback(null, data);
-      delete d3.jsonp[c];
-      script.remove();
-    };
-    return 'd3.jsonp.' + c;
-  }
-
-  var cb = create(url),
-    script = d3.select('head')
-    .append('script')
-    .attr('type', 'text/javascript')
-    .attr('src', url.replace(/(\{|%7B)callback(\}|%7D)/, cb));
-};
-
-function day (s) {
-  if (!(s instanceof Date)) {
-    if (!Date.parse(s))
-      return null
-    s = new Date(s)
-  }
-  return s.toISOString().substr(0, 10)
-}
-
-function totalDownloadsUrl(from, to) {
-  return '/vis/index';
-  /*
-  return '//isaacs.iriscouch.com/downloads/_design/app/_view/day?' +
-    'group_level=1' +
-    '&startkey=' + encodeURIComponent(JSON.stringify([ day(from) ])) +
-    '&endkey=' + encodeURIComponent(JSON.stringify([ day(to), {} ])) +
-    '&callback={callback}';
-  */
-}
-
-function packageDownloadsUrl(name, from, to) {
-  return '/vis/package/'+name;
-  /*
-  return '//isaacs.iriscouch.com/downloads/_design/app/_view/pkg?' +
-    'group_level=2' +
-    '&startkey=' + encodeURIComponent(JSON.stringify([ name, day(from) ])) +
-    '&endkey=' + encodeURIComponent(JSON.stringify([ name, day(to), {} ])) +
-    '&callback={callback}';
-  */
-}
+})
 
 function downloadChart(opts) {
-  // load data
-  d3.json(opts.url, function(err, raw) {
-    var data = [];
-    if(err) {
-      return;
-    }
 
-    for(var i = 0; i < raw.rows.length; i++) {
-      data.push({
-        date: new Date(raw.rows[i].key[opts.dateKeyIndex]),
-        downloads: raw.rows[i].value
-      });
-    }
-
-    data.sort(function(a, b) {
-      return a.date - b.date;
-    });
-
-    render(data);
-  });
+  render(opts.data)
 
   // render d3 chart
   function render(data) {
