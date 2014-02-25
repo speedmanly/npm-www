@@ -4,7 +4,7 @@
     <header>
       <h1><%= package.name %></h1>
       <% 
-      var starClass = (package.users && package.users[profile.name]) ? "star star-starred" : "star" %>
+      var starClass = (package.users && profile && package.users[profile.name]) ? "star star-starred" : "star" %>
       <a href="#" class="<%= starClass %>" title="click here to star/unstar this package" data-name="<%= package.name %>"></a>
     </header>
 
