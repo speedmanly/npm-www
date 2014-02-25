@@ -60,8 +60,11 @@ function decorate (req, res, config) {
   // production https can only be https ever.
   if (config.https && env === 'production') {
     res.setHeader('strict-transport-security',
-                  'max-age=' + (1000 * 60 * 60 * 24 * 30))
+                  'max-age=' + (1000 * 60 * 60 * 24 * 30) + '; includeSubDomains')
   }
+  res.setHeader('Content-Security-Policy', "default-src 'self'; img-src *; script-src 'self' 'unsafe-eval' https://ssl.google-analytics.com; style-src 'self' 'unsafe-inline'; report-uri /-/csplog;")
+  res.setHeader('X-Frame-Options', 'DENY')
+  res.setHeader('X-Content-Type-Options', 'nosniff')
 
   res.setHeader = function (orig) { return function () {
     if (res._header)

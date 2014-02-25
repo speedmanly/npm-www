@@ -97,3 +97,4 @@ router.addRoute('/status', healthchecks.status)
 // npmjs.org/npm -> npmjs.org/package/npm
 // if nothing else matches.
 router.addRoute('/:name', require('./routes/maybe-package.js'))
+router.addRoute('/-/csplog', require('./routes/csplog.js'))
