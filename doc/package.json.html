@@ -3,6 +3,7 @@
   <title>package.json</title>
   <meta http-equiv="content-type" value="text/html;utf-8">
   <link rel="stylesheet" type="text/css" href="../static/style.css">
+  <script async=true src="../../static/toc.js"></script>
 
   <body>
     <div id="wrapper">
@@ -350,15 +351,13 @@ an argument to <code>git checkout</code>.  The default is <code>master</code>.</
 
 <p>As of version 1.1.65, you can refer to GitHub urls as just &quot;foo&quot;: &quot;user/foo-project&quot;. For example:</p>
 
-<p><code>json
-{
+<pre><code>{
   &quot;name&quot;: &quot;foo&quot;,
   &quot;version&quot;: &quot;0.0.0&quot;,
   &quot;dependencies&quot;: {
     &quot;express&quot;: &quot;visionmedia/express&quot;
   }
-}
-</code></p>
+}</code></pre>
 
 <h2 id="devDependencies">devDependencies</h2>
 
@@ -379,8 +378,7 @@ script to do this, and make the required package a devDependency.</p>
 
 <p>For example:</p>
 
-<p><code>json
-{ &quot;name&quot;: &quot;ethopia-waza&quot;,
+<pre><code>{ &quot;name&quot;: &quot;ethopia-waza&quot;,
   &quot;description&quot;: &quot;a delightfully fruity coffee varietal&quot;,
   &quot;version&quot;: &quot;1.2.3&quot;,
   &quot;devDependencies&quot;: {
@@ -390,8 +388,7 @@ script to do this, and make the required package a devDependency.</p>
     &quot;prepublish&quot;: &quot;coffee -o lib/ -c src/waza.coffee&quot;
   },
   &quot;main&quot;: &quot;lib/waza.js&quot;
-}
-</code></p>
+}</code></pre>
 
 <p>The <code>prepublish</code> script will be run before publishing, so that users
 can consume the functionality without requiring them to compile it
@@ -546,35 +543,4 @@ ignored.</p></li></ul>
 
 <ul><li><a href="misc/semver.html">semver(7)</a></li><li><a href="cli/npm-init.html">npm-init(1)</a></li><li><a href="cli/npm-version.html">npm-version(1)</a></li><li><a href="cli/npm-config.html">npm-config(1)</a></li><li><a href="misc/npm-config.html">npm-config(7)</a></li><li><a href="cli/npm-help.html">npm-help(1)</a></li><li><a href="misc/npm-faq.html">npm-faq(7)</a></li><li><a href="cli/npm-install.html">npm-install(1)</a></li><li><a href="cli/npm-publish.html">npm-publish(1)</a></li><li><a href="cli/npm-rm.html">npm-rm(1)</a></li></ul>
 </div>
-<p id="footer">package.json &mdash; npm@1.4.3</p>
-<script>
-;(function () {
-var wrapper = document.getElementById("wrapper")
-var els = Array.prototype.slice.call(wrapper.getElementsByTagName("*"), 0)
-  .filter(function (el) {
-    return el.parentNode === wrapper
-        && el.tagName.match(/H[1-6]/)
-        && el.id
-  })
-var l = 2
-  , toc = document.createElement("ul")
-toc.innerHTML = els.map(function (el) {
-  var i = el.tagName.charAt(1)
-    , out = ""
-  while (i > l) {
-    out += "<ul>"
-    l ++
-  }
-  while (i < l) {
-    out += "</ul>"
-    l --
-  }
-  out += "<li><a href='#" + el.id + "'>" +
-    ( el.innerText || el.text || el.innerHTML)
-    + "</a>"
-  return out
-}).join("\n")
-toc.id = "toc"
-document.body.appendChild(toc)
-})()
-</script>
+<p id="footer">package.json &mdash; npm@1.4.4</p>
