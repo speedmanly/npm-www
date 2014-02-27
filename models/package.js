@@ -20,6 +20,7 @@ function urlPolicy (pkgData) {
       if (!gh) return null
       // temporary fix for relative links in github readmes, until a more general fix is needed
       var v = url.parse(gh)
+      if (u.path_) { v.pathname = v.pathname + '/blob/master/' + u.path_} 
       u = {
         protocol: v.protocol,
         host: v.host,
