@@ -37,10 +37,11 @@ function star (req, res) {
           er.path = req.url
           res.session.set('error', er)
           res.session.set('done', req.url)
-          return res.redirect('/login')
+          res.statusCode = 403
+          return res.send('User is not logged in', 403)
         }
 
-        return res.send(200)
+        return res.send('OK', 200)
       })
 
     })
