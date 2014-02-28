@@ -315,6 +315,41 @@ input.submit, input#submit, input.button, button, input[type=submit] {
   display:block;
 }
 
+/* styling for doc-404.html only */
+
+small.heart {
+  position: absolute;
+  font-size: 10px;
+  right: 0;
+  bottom: 0;
+  padding: 1em;
+  font-family: "Lucida Grande", sans-serif;
+  color: #666;
+  font-style: normal;
+}
+
+#npm-logo {
+  position: relative;
+  top: 0px;
+  text-align: center;
+}
+
+#npm-logo img {
+  border: 0;
+  width: 200px;
+  height: 78px;
+  image-rendering: -o-crisp-edges;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+article {
+  text-align: center;
+}
+
+/* end styling for doc-404.html */
+
 @media print {
     a[href] {
         color:inherit;
