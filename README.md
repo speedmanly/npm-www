@@ -148,7 +148,7 @@ issue first to discuss the direction.  Beyond that, just fork and send
 pull requests, as is the custom of our time.  Your name will be added to
 the AUTHORS file, and displayed on the `/about` page.
 
-See the [issues page](https://github.com/isaacs/npm-www/issues) if you
+See the [issues page](https://github.com/npm/npm-www/issues) if you
 are looking for something to help out with.  In general, submissions
 that add new functionality or fix actual bugs will be favored over those
 that are purely stylistic.
